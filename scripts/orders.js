@@ -1,16 +1,16 @@
-import { cart } from '../data/cart-class.js';
-import {getProduct, loadProductsFetch} from '../data/products.js';
-import {orders} from '../data/orders.js';
-import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import { formatCurrency } from './utils/money.js';
+import { cart } from "../data/cart-class.js";
+import { getProduct, loadProductsFetch } from "../data/products.js";
+import { orders } from "../data/orders.js";
+import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
+import { formatCurrency } from "./utils/money.js";
 
 async function loadPage() {
-  await loadProductsFetch()
+  await loadProductsFetch();
 
-  let ordersHTML = '';
+  let ordersHTML = "";
 
   orders.forEach((order) => {
-    const orderTimeString = dayjs(order.orderTime).format('MMMM D');
+    const orderTimeString = dayjs(order.orderTime).format("MMMM D");
 
     ordersHTML += `
     <div class="order-container">
@@ -36,11 +36,11 @@ async function loadPage() {
             ${productsListHTML(order)}
           </div>
     </div>
-    `
+    `;
   });
 
   function productsListHTML(order) {
-    let productListHTML = '';
+    let productListHTML = "";
 
     order.products.forEach((productDetails) => {
       const product = getProduct(productDetails.productId);
@@ -55,7 +55,9 @@ async function loadPage() {
             ${product.name}
           </div>
           <div class="product-delivery-date">
-            Arriving on: ${dayjs(productDetails.estimatedDeliveryTime).format('MMMM D')}
+            Arriving on: ${dayjs(productDetails.estimatedDeliveryTime).format(
+              "MMMM D"
+            )}
           </div>
           <div class="product-quantity">
             Quantity: ${productDetails.quantity}
@@ -80,17 +82,14 @@ async function loadPage() {
     return productListHTML;
   }
 
-  document.querySelector('.js-orders-grid')
-    .innerHTML = ordersHTML;
+  document.querySelector(".js-orders-grid").innerHTML = ordersHTML;
 
-  document.querySelectorAll('.js-buy-again').forEach((button) => {
-    button.addEventListener('click', () => {
+  document.querySelectorAll(".js-buy-again").forEach((button) => {
+    button.addEventListener("click", () => {
       cart.addToCartOnlyOne(button.dataset.productId);
       updateCartQuantity();
 
-      // (Optional) display a message that the product was added,
-      // then change it back after a second.
-      button.innerHTML = 'Added';
+      button.innerHTML = "Added";
       setTimeout(() => {
         button.innerHTML = `
           <img class="buy-again-icon" src="images/icons/buy-again.png">
@@ -103,21 +102,18 @@ async function loadPage() {
 
 loadPage();
 
-document.querySelector('.js-clean-orders-button')
-  .addEventListener('click', () => {
-    cart.clearLocalStorage('orders');
+document
+  .querySelector(".js-clean-orders-button")
+  .addEventListener("click", () => {
+    cart.clearLocalStorage("orders");
     location.reload();
-  })
-
-//* For header cart *//
+  });
 
 function updateCartQuantity() {
   let cartQuantity = 0;
   cart.cartItems.forEach((cartItem) => {
     cartQuantity += cartItem.quantity;
   });
-  document.querySelector('.js-cart-quantity')
-    .innerHTML = cartQuantity;
+  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
 }
 updateCartQuantity();
-

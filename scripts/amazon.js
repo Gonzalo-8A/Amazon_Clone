@@ -1,32 +1,34 @@
-import { cart } from '../data/cart-class.js';
-import {products, loadProducts} from '../data/products.js';
-import {formatCurrency} from './utils/money.js';
+import { cart } from "../data/cart-class.js";
+import { products, loadProducts } from "../data/products.js";
+import { formatCurrency } from "./utils/money.js";
 
 loadProducts(renderProductsGrid);
 
 function renderProductsGrid() {
-  let productsHTML = '';
+  let productsHTML = "";
 
   const url = new URL(window.location.href);
-  const search = url.searchParams.get('search')
-  
+  const search = url.searchParams.get("search");
+
   let filteredProducts = products;
 
-  if(search) {
+  if (search) {
     filteredProducts = products.filter((product) => {
       let matchingKeyword = false;
 
       product.keywords.forEach((keyword) => {
-        if(keyword.toLowerCase().includes(search.toLowerCase())) {
+        if (keyword.toLowerCase().includes(search.toLowerCase())) {
           matchingKeyword = true;
         }
       });
 
-      return matchingKeyword || 
+      return (
+        matchingKeyword ||
         product.name.toLowerCase().includes(search.toLowerCase)
+      );
     });
   }
-  
+
   filteredProducts.forEach((product) => {
     productsHTML += `
       <div class="product-container">
@@ -76,57 +78,55 @@ function renderProductsGrid() {
       </div>
     `;
   });
-  document.querySelector('.js-products-grid').innerHTML = productsHTML;
+  document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
   function updateCartQuantity() {
     let cartQuantity = 0;
     cart.cartItems.forEach((cartItem) => {
       cartQuantity += cartItem.quantity;
     });
-    document.querySelector('.js-cart-quantity')
-      .innerHTML = cartQuantity;
+    document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
   }
 
   updateCartQuantity();
 
-  document.querySelectorAll('.js-add-to-cart')
-    .forEach((button) => {
-      let addedMessageTimeoutId;
-      
-      button.addEventListener('click', () => {
-        const productId = button.dataset.productId;
-        cart.addToCart(productId);
-        updateCartQuantity();
+  document.querySelectorAll(".js-add-to-cart").forEach((button) => {
+    let addedMessageTimeoutId;
 
-        const addedMessage = document.querySelector(
-        `.js-added-to-cart-${productId}`);
-        
-        addedMessage.classList.add('added-to-cart-visible');
-      
-        if (addedMessageTimeoutId) {
-          clearTimeout(addedMessageTimeoutId);
-        }
+    button.addEventListener("click", () => {
+      const productId = button.dataset.productId;
+      cart.addToCart(productId);
+      updateCartQuantity();
 
-        const timeoutId = setTimeout(() => {
-          addedMessage.classList.remove('added-to-cart-visible');
-        }, 2000);
+      const addedMessage = document.querySelector(
+        `.js-added-to-cart-${productId}`
+      );
 
-        addedMessageTimeoutId = timeoutId;
-      });
+      addedMessage.classList.add("added-to-cart-visible");
+
+      if (addedMessageTimeoutId) {
+        clearTimeout(addedMessageTimeoutId);
+      }
+
+      const timeoutId = setTimeout(() => {
+        addedMessage.classList.remove("added-to-cart-visible");
+      }, 2000);
+
+      addedMessageTimeoutId = timeoutId;
     });
-
-    document.querySelector('.js-search-button')
-    .addEventListener('click', () => {
-      const search = document.querySelector('.js-search-bar').value;
-      window.location.href = `index.html?search=${search}`;
-    });
-  
-    document.querySelector('.js-search-bar')
-  .addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      const search = document.querySelector('.js-search-bar').value;
-    window.location.href = `index.html?search=${search}`;}
   });
-}
 
-  
+  document.querySelector(".js-search-button").addEventListener("click", () => {
+    const search = document.querySelector(".js-search-bar").value;
+    window.location.href = `index.html?search=${search}`;
+  });
+
+  document
+    .querySelector(".js-search-bar")
+    .addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const search = document.querySelector(".js-search-bar").value;
+        window.location.href = `index.html?search=${search}`;
+      }
+    });
+}

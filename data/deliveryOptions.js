@@ -40,8 +40,6 @@ export function calculateDeliveryDate(deliveryOption) {
 
     if (!isWeekend(deliveryDate)) {
       remainingDays--;
-      // This is a shortcut for:
-      // remainingDays = remainingDays - 1;
     }
   }
 
